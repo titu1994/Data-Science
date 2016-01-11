@@ -26,7 +26,12 @@ classifier.train(trainSet)
 classified = [(subject, isSpam, classifier.classify(subject))
               for subject, isSpam in testSet]
 
+print("Naive Bayes Classified emails :")
+for subject, isSpam, spamProbability in classified:
+    print("Subject : ", subject, " Spam Probability : ", spamProbability, " IsSpam : ", isSpam )
+print()
+
 counts = Counter((isSpam, spamProbability > 0.5)
                  for _, isSpam, spamProbability in classified)
 
-print(counts)
+print("In format (isSpam, classified as spam) : \n", counts)

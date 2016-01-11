@@ -16,7 +16,7 @@ def vectorSum(vectors):
         result = vectorAdd(result, vec)
     return result
 
-def scalarMultiply(v, c):
+def scalarMultiply(c, v):
     return [c * vi
             for vi in v]
 
