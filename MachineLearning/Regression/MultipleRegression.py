@@ -1,14 +1,14 @@
 from collections import Counter
 from functools import partial
-from LinearUtils.Vectors import dotProduct, vectorAdd
-from StatisticsUtils.Statistics import median, stdDeviation
-from StatisticsUtils.Probability import normalCDF
-from Optimization.StochasticGradientDescent import minimizeStochastic
-from MachineLearning.Regression.LinearRegression import totalSumOfSquares
+from LinearUtils.Vectors import dotProduct as dot, vectorAdd as vector_add
+from statistics import median, stdev as standard_deviation
+from StatisticsUtils.Probability import normalCDF as normal_cdf
+from Optimization.StochasticGradientDescent import minimizeStochastic as minimize_stochastic
+from MachineLearning.Regression.LinearRegression import totalSumOfSquares as total_sum_of_squares
 import math, random
 
 def predict(x_i, beta):
-    return dotProduct(x_i, beta)
+    return dot(x_i, beta)
 
 def error(x_i, y_i, beta):
     return y_i - predict(x_i, beta)
@@ -23,7 +23,7 @@ def squared_error_gradient(x_i, y_i, beta):
 
 def estimate_beta(x, y):
     beta_initial = [random.random() for x_i in x[0]]
-    return minimizeStochastic(squared_error,
+    return minimize_stochastic(squared_error,
                                squared_error_gradient,
                                x, y,
                                beta_initial,
@@ -32,7 +32,7 @@ def estimate_beta(x, y):
 def multiple_r_squared(x, y, beta):
     sum_of_squared_errors = sum(error(x_i, y_i, beta) ** 2
                                 for x_i, y_i in zip(x, y))
-    return 1.0 - sum_of_squared_errors / totalSumOfSquares(y)
+    return 1.0 - sum_of_squared_errors / total_sum_of_squares(y)
 
 def bootstrap_sample(data):
     """randomly samples len(data) elements with replacement"""
@@ -49,9 +49,9 @@ def estimate_sample_beta(sample):
 
 def p_value(beta_hat_j, sigma_hat_j):
     if beta_hat_j > 0:
-        return 2 * (1 - normalCDF(beta_hat_j / sigma_hat_j))
+        return 2 * (1 - normal_cdf(beta_hat_j / sigma_hat_j))
     else:
-        return 2 * normalCDF(beta_hat_j / sigma_hat_j)
+        return 2 * normal_cdf(beta_hat_j / sigma_hat_j)
 
 #
 # REGULARIZED REGRESSION
@@ -60,7 +60,7 @@ def p_value(beta_hat_j, sigma_hat_j):
 # alpha is a *hyperparameter* controlling how harsh the penalty is
 # sometimes it's called "lambda" but that already means something in Python
 def ridge_penalty(beta, alpha):
-  return alpha * dotProduct(beta[1:], beta[1:])
+  return alpha * dot(beta[1:], beta[1:])
 
 def squared_error_ridge(x_i, y_i, beta, alpha):
     """estimate error plus ridge penalty on beta"""
@@ -73,14 +73,14 @@ def ridge_penalty_gradient(beta, alpha):
 def squared_error_ridge_gradient(x_i, y_i, beta, alpha):
     """the gradient corresponding to the ith squared error term
     including the ridge penalty"""
-    return vectorAdd(squared_error_gradient(x_i, y_i, beta),
+    return vector_add(squared_error_gradient(x_i, y_i, beta),
                       ridge_penalty_gradient(beta, alpha))
 
 def estimate_beta_ridge(x, y, alpha):
     """use gradient descent to fit a ridge regression
     with penalty alpha"""
     beta_initial = [random.random() for x_i in x[0]]
-    return minimizeStochastic(partial(squared_error_ridge, alpha=alpha),
+    return minimize_stochastic(partial(squared_error_ridge, alpha=alpha),
                                partial(squared_error_ridge_gradient,
                                        alpha=alpha),
                                x, y,
@@ -123,7 +123,7 @@ if __name__ == "__main__":
                                           100)
 
     bootstrap_standard_errors = [
-        stdDeviation([beta[i] for beta in bootstrap_betas])
+        standard_deviation([beta[i] for beta in bootstrap_betas])
         for i in range(4)]
 
     print("bootstrap standard errors", bootstrap_standard_errors)
@@ -142,6 +142,6 @@ if __name__ == "__main__":
         beta = estimate_beta_ridge(x, daily_minutes_good, alpha=alpha)
         print("alpha", alpha)
         print("beta", beta)
-        print("dot(beta[1:],beta[1:])", dotProduct(beta[1:], beta[1:]))
+        print("dot(beta[1:],beta[1:])", dot(beta[1:], beta[1:]))
         print("r-squared", multiple_r_squared(x, daily_minutes_good, beta))
         print()

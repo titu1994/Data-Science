@@ -1,5 +1,6 @@
 from collections import Counter
-import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style("white")
 import math
 import random
 
@@ -25,13 +26,13 @@ def normalCDF(x, mu = 0, sigma = 1.0):
 def __displayPDF():
     xs = [x / 10.0
           for x in range(-50, 50)]
-    plt.plot(xs, [normalPDF(x, sigma=1) for x in xs], "-", label="mu = 0, sigma = 1")
-    plt.plot(xs, [normalPDF(x, sigma=2) for x in xs], "--", label="mu = 0, sigma = 2")
-    plt.plot(xs, [normalPDF(x, sigma=0.5) for x in xs], ":", label="mu = 0, sigma = 0.5")
-    plt.plot(xs, [normalPDF(x, mu=-1) for x in xs], "-.", label="mu = -1, sigma = 1")
-    plt.legend()
-    plt.title("Various PDFs")
-    plt.show()
+    sns.plt.plot(xs, [normalPDF(x, sigma=1) for x in xs], "-", label="mu = 0, sigma = 1")
+    sns.plt.plot(xs, [normalPDF(x, sigma=2) for x in xs], "--", label="mu = 0, sigma = 2")
+    sns.plt.plot(xs, [normalPDF(x, sigma=0.5) for x in xs], ":", label="mu = 0, sigma = 0.5")
+    sns.plt.plot(xs, [normalPDF(x, mu=-1) for x in xs], "-.", label="mu = -1, sigma = 1")
+    sns.plt.legend()
+    sns.plt.title("Various PDFs")
+    sns.plt.show()
 
 # Display Various PDFs
 # __displayPDF()
@@ -39,13 +40,13 @@ def __displayPDF():
 def __displayCDF():
     xs = [x / 10.0
           for x in range(-50, 50)]
-    plt.plot(xs, [normalCDF(x, sigma=1) for x in xs], "-", label="mu = 0, sigma = 1")
-    plt.plot(xs, [normalCDF(x, sigma=2) for x in xs], "--", label="mu = 0, sigma = 2")
-    plt.plot(xs, [normalCDF(x, sigma=0.5) for x in xs], ":", label="mu = 0, sigma = 0.5")
-    plt.plot(xs, [normalCDF(x, mu=-1) for x in xs], "-.", label="mu = -1, sigma = 1")
-    plt.legend()
-    plt.title("Various CDFs")
-    plt.show()
+    sns.plt.plot(xs, [normalCDF(x, sigma=1) for x in xs], "-", label="mu = 0, sigma = 1")
+    sns.plt.plot(xs, [normalCDF(x, sigma=2) for x in xs], "--", label="mu = 0, sigma = 2")
+    sns.plt.plot(xs, [normalCDF(x, sigma=0.5) for x in xs], ":", label="mu = 0, sigma = 0.5")
+    sns.plt.plot(xs, [normalCDF(x, mu=-1) for x in xs], "-.", label="mu = -1, sigma = 1")
+    sns.plt.legend()
+    sns.plt.title("Various CDFs")
+    sns.plt.show()
 
 # Display various CDFs
 # __displayCDF()
@@ -83,7 +84,7 @@ def __displayHistogram(p, n, num_points):
             for _ in range(num_points)]
 
     histogram = Counter(data)
-    plt.bar([x - 0.4 for x in histogram.keys()],
+    sns.plt.bar([x - 0.4 for x in histogram.keys()],
             [v / num_points for v in histogram.values()],
             0.8, color="0.75")
 
@@ -94,9 +95,9 @@ def __displayHistogram(p, n, num_points):
     ys = [normalCDF(i + 0.5, mu, sigma) - normalCDF(i - 0.5, mu, sigma)
           for i in xs]
 
-    plt.plot(xs, ys)
-    plt.title("Binomial Distribution vs Normal Approximation")
-    plt.show()
+    sns.plt.plot(xs, ys)
+    sns.plt.title("Binomial Distribution vs Normal Approximation")
+    sns.plt.show()
 
 # Display Histogram of Binomial Approximation
 # __displayHistogram(0.75, 100, 10000)

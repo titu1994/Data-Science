@@ -1,9 +1,10 @@
 from collections import Counter
 from functools import partial, reduce
-from LinearUtils.Vectors import dotProduct,vectorAdd
+from LinearUtils.Vectors import dotProduct as dot, vectorAdd as vector_add
+from Optimization.GradientDescent import maximizeBatch as maximize_batch
+from Optimization.StochasticGradientDescent import maximizeStochastic_list as maximize_stochastic
 from LinearUtils.Scaling import rescale
-from Optimization.StochasticGradientDescent import maximizeStochastic_list
-from MLUtils.ML import trainSetSplit
+from MLUtils.ML import trainSetSplit as train_test_split
 from MachineLearning.Regression.MultipleRegression import estimate_beta, predict
 import math, random
 
@@ -15,9 +16,9 @@ def logistic_prime(x):
 
 def logistic_log_likelihood_i(x_i, y_i, beta):
     if y_i == 1:
-        return math.log(logistic(dotProduct(x_i, beta)))
+        return math.log(logistic(dot(x_i, beta)))
     else:
-        return math.log(1.00000000000001 - logistic(dotProduct(x_i, beta)))
+        return math.log(1.0000000000000002 - logistic(dot(x_i, beta)))
 
 def logistic_log_likelihood(x, y, beta):
     return sum(logistic_log_likelihood_i(x_i, y_i, beta)
@@ -27,7 +28,7 @@ def logistic_log_partial_ij(x_i, y_i, beta, j):
     """here i is the index of the data point,
     j the index of the derivative"""
 
-    return (y_i - logistic(dotProduct(x_i, beta))) * x_i[j]
+    return (y_i - logistic(dot(x_i, beta))) * x_i[j]
 
 def logistic_log_gradient_i(x_i, y_i, beta):
     """the gradient of the log likelihood
@@ -37,7 +38,7 @@ def logistic_log_gradient_i(x_i, y_i, beta):
             for j, _ in enumerate(beta)]
 
 def logistic_log_gradient(x, y, beta):
-    return reduce(vectorAdd,
+    return reduce(vector_add,
                   [logistic_log_gradient_i(x_i, y_i, beta)
                    for x_i, y_i in zip(x,y)])
 
@@ -57,25 +58,25 @@ if __name__ == "__main__":
 
     print("logistic regression:")
 
-    random.seed(0)
-    x_train, x_test, y_train, y_test = trainSetSplit(rescaled_x, y, 0.33)
 
+    random.seed(0)
+    x_train, x_test, y_train, y_test = train_test_split(rescaled_x, y, 0.33)
+
+    """
     # want to maximize log likelihood on the training data
-    #fn = partial(logistic_log_likelihood, x_train, y_train)
-    #gradient_fn = partial(logistic_log_gradient, x_train, y_train)
+    fn = partial(logistic_log_likelihood, x_train, y_train)
+    gradient_fn = partial(logistic_log_gradient, x_train, y_train)
 
     # pick a random starting point
-    #beta_0 = [random.random() for _ in range(3)]
+    beta_0 = [1, 1, 1]
 
     # and maximize using gradient descent
-    #beta_hat = maximizeBatch(fn, gradient_fn, beta_0)
-
-    #print("beta_batch", beta_hat)
+    beta_hat = maximize_batch(fn, gradient_fn, beta_0)
+    print("beta_batch", beta_hat)
+    """
 
     beta_0 = [random.random() for _ in range(3)]
-    print("Beta Initial : ", beta_0)
-
-    beta_hat = maximizeStochastic_list(logistic_log_likelihood_i,
+    beta_hat = maximize_stochastic(logistic_log_likelihood_i,
                                    logistic_log_gradient_i,
                                    x_train, y_train, beta_0)
 
@@ -84,7 +85,7 @@ if __name__ == "__main__":
     true_positives = false_positives = true_negatives = false_negatives = 0
 
     for x_i, y_i in zip(x_test, y_test):
-        predict = logistic(dotProduct(beta_hat, x_i))
+        predict = logistic(dot(beta_hat, x_i))
 
         if y_i == 1 and predict >= 0.5:  # TP: paid and we predict paid
             true_positives += 1
