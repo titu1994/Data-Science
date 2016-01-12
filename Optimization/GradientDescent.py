@@ -56,3 +56,22 @@ def negateAll(f):
 
 def maximizeBatch(targetFn, gradientFn, theta0, tolerance = 0.000001):
     return minimizeBatch(negate(targetFn), negateAll(gradientFn), theta0, tolerance)
+
+
+def minimizeBatch_list(targetFn, gradientFn, theta0, tolerance = 0.000001):
+    stepsizes = [100, 10, 1, 0.1, 0.01, 0.001, 0.0001, 0.00001]
+    theta = theta0
+    targetFn = safe(targetFn)
+    value = targetFn(theta)
+
+    while True:
+        gradient = gradientFn(theta)
+        nextThetas = [step(theta, gradient, stepsize)
+                      for stepsize in stepsizes]
+        nextTheta = min(nextThetas, key=targetFn)
+        nextValue = targetFn(nextTheta)
+
+        if abs(value - nextValue) < tolerance:
+            return theta
+        else:
+            theta, value = nextTheta, nextValue
