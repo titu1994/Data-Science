@@ -15,7 +15,7 @@ def rescale(dataMatrix):
 
     def rescaled(i, j):
         if(stdevs[j] > 0):
-            return dataMatrix[i][j] - means[j] / stdevs[j]
+            return (dataMatrix[i][j] - means[j]) / stdevs[j]
         else:
             return dataMatrix[i][j]
 

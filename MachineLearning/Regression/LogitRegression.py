@@ -51,17 +51,17 @@ if __name__ == "__main__":
     x = [[1] + row[:2] for row in data] # each element is [1, experience, salary]
     y = [row[2] for row in data]        # each element is paid_account
 
-    print("linear regression:")
-
+    print("X : ", x)
     rescaled_x = rescale(x)
+    print("Rescaled X : ", rescaled_x)
+
+    print("\nlinear regression:")
     beta = estimate_beta(rescaled_x, y)
-    print(beta)
+    print("Linear Regression Coeff : ", beta)
 
-    print("logistic regression:")
-
-
+    print("\nlogistic regression:")
     random.seed(0)
-    x_train, x_test, y_train, y_test = train_test_split(rescaled_x, y, 0.33)
+    x_train, x_test, y_train, y_test = train_test_split(rescaled_x, y, 0.1)
 
     """
     # want to maximize log likelihood on the training data
@@ -81,7 +81,7 @@ if __name__ == "__main__":
                                    logistic_log_gradient_i,
                                    x_train, y_train, beta_0)
 
-    print("beta stochastic", beta_hat)
+    print("Beta Stochastic Gradient Value : ", beta_hat)
 
     true_positives = false_positives = true_negatives = false_negatives = 0
 
