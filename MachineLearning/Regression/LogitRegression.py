@@ -97,8 +97,8 @@ if __name__ == "__main__":
         else:                            # TN: unpaid and we predict unpaid
             true_negatives += 1
 
-    precision = true_positives / (true_positives + false_positives)
-    recall = true_positives / (true_positives + false_negatives)
+    precision = true_positives / (true_positives + false_positives) # Given a positive output from the LR, what is the probability that it is correct?
+    recall = true_positives / (true_positives + false_negatives) # Given a positive sample, will LR correctly identify it as Positive.
 
     print("precision", precision)
     print("recall", recall)
