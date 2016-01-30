@@ -17,7 +17,7 @@ if __name__ == "__main__":
     print("logistic regression:\n")
 
     random.seed(0)
-    x_train, x_test, y_train, y_test = trainSetSplit(x, y, 0.33)
+    x_train, x_test, y_train, y_test = trainSetSplit(x, y, 0.1)
 
     x_train = np.array(x_train)
     x_test = np.array(x_test)
@@ -43,8 +43,8 @@ if __name__ == "__main__":
 
     print("True Positive : ", true_positives, " False Positive : ", false_positives, " True Negative : ", true_negatives, " False Negative : ", false_negatives)
 
-    precision = true_positives / (true_positives + false_positives)
-    recall = true_positives / (true_positives + false_negatives)
+    precision = true_positives / (true_positives + false_positives) # Given a positive output from the LR, what is the probability that it is correct?
+    recall = true_positives / (true_positives + false_negatives) # Given a positive sample, will LR correctly identify it as Positive.
 
     print("precision", precision)
     print("recall", recall)

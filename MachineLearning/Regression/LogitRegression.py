@@ -100,5 +100,7 @@ if __name__ == "__main__":
     precision = true_positives / (true_positives + false_positives) # Given a positive output from the LR, what is the probability that it is correct?
     recall = true_positives / (true_positives + false_negatives) # Given a positive sample, will LR correctly identify it as Positive.
 
+    print("True Positive : ", true_positives, " False Positive : ", false_positives, " True Negative : ", true_negatives, " False Negative : ", false_negatives)
+
     print("precision", precision)
     print("recall", recall)
