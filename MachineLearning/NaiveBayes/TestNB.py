@@ -5,7 +5,7 @@ from collections import Counter
 import MLUtils.ML as ml
 import MachineLearning.NaiveBayes.NaiveBayes as nb
 
-path = r"D:\Users\Yue\Documents\Datasets\Spam\*\*"
+path = r"D:\Yue\Downloads\SpamData\*\*"
 data = []
 
 for fn in glob.glob(path):

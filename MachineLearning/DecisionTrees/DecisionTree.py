@@ -102,22 +102,44 @@ dataset = [({'level': 'Senior', 'lang': 'Java', 'tweets': 'no', 'phd': 'no'}, Fa
            ({'level':'Mid', 'lang':'Java', 'tweets':'yes', 'phd':'no'},       True),
            ({'level':'Junior', 'lang':'Python', 'tweets':'no', 'phd':'yes'}, False)]
 
+buyscomputer = [({"age":"y", "income":"h", "student":"n", "credit":"f"}, False),
+                ({"age":"y", "income":"h", "student":"n", "credit":"e"}, False),
+                ({"age":"m", "income":"h", "student":"n", "credit":"f"}, True),
+                ({"age":"s", "income":"m", "student":"n", "credit":"f"}, True),
+                ({"age":"s", "income":"l", "student":"y", "credit":"f"}, True),
+                ({"age":"s", "income":"l", "student":"y", "credit":"e"}, False),
+                ({"age":"m", "income":"l", "student":"y", "credit":"e"}, True),
+                ({"age":"y", "income":"m", "student":"n", "credit":"f"}, False),
+                ({"age":"y", "income":"l", "student":"y", "credit":"f"}, True),
+                ({"age":"s", "income":"m", "student":"y", "credit":"f"}, True),
+                ({"age":"y", "income":"m", "student":"y", "credit":"e"}, True),
+                ({"age":"m", "income":"m", "student":"n", "credit":"e"}, True),
+                ({"age":"m", "income":"m", "student":"y", "credit":"f"}, True),
+                ({"age":"s", "income":"m", "student":"n", "credit":"e"}, False)]
+
 print("Description of the entropy value of each of the attributes")
 
+"""
 for key in ["level", "lang", "tweets", "phd"]:
     print(key, partitionEntropyBy(dataset, key))
+"""
 
-print("\nDescription of the entropy values of all senior personal")
+for key in ["age", "income", "student", "credit"]:
+    print(key, partitionEntropyBy(buyscomputer, key))
 
-seniorInputs = [(ip, label) for ip, label in dataset if ip["level"] == "Senior"]
+#print("\nDescription of the entropy values of all senior personal")
 
-for key in ["lang", "tweets", "phd"]:
-    print(key, partitionEntropyBy(seniorInputs, key))
+#seniorInputs = [(ip, label) for ip, label in dataset if ip["level"] == "Senior"]
 
-print("\nAs we can see, for a person who is a 'Senior', 'twee' is an irrelevent factor, and 'phd' is a much more important factor\n")
+#for key in ["lang", "tweets", "phd"]:
+#   print(key, partitionEntropyBy(seniorInputs, key))
 
-decisionTree = buildID3(dataset)
+#print("\nAs we can see, for a person who is a 'Senior', 'twee' is an irrelevent factor, and 'phd' is a much more important factor\n")
 
-query = {"level" : "Junior", "lang" : "Java", "tweets" : "yes", "phd" : "no"}
+decisionTree = buildID3(buyscomputer)
+
+#query = {"level" : "Junior", "lang" : "Java", "tweets" : "yes", "phd" : "no"}
+query = {"age":"y", "income":"m", "student":"y", "credit":"f"}
 print("Query : ", query)
-print("Interviewer Decision to hire : ", classify(decisionTree, query))
+#print("Interviewer Decision to hire : ", classify(decisionTree, query))
+print("Buys Computer : ", classify(decisionTree, query))

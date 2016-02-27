@@ -1,0 +1,21 @@
+@RELATION buyscomputer
+@ATTRIBUTE age {y, m, s}
+@ATTRIBUTE income {l, m, h}
+@ATTRIBUTE student {y, n}
+@ATTRIBUTE credit {e, f}
+@ATTRIBUTE class {y, n}
+@DATA
+y,h,n,f,n
+y,h,n,e,n
+m,h,n,f,y
+s,m,n,f,y
+s,l,y,f,y
+s,l,y,e,n
+m,l,y,e,y
+y,m,n,f,n
+y,l,y,f,y
+s,m,y,f,y
+y,m,y,e,y
+m,m,n,e,y
+m,m,y,f,y
+s,m,n,e,n
