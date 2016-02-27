@@ -2,7 +2,7 @@ from collections import defaultdict
 import re
 import math
 
-class NaiveBayesClassifier:
+class NaiveBayesSpamClassifier:
 
     def __init__(self, k = 0.5):
         self.k = k

@@ -20,7 +20,7 @@ for fn in glob.glob(path):
 random.seed(0)
 trainSet, testSet = ml.splitData(data, 0.75)
 
-classifier = nb.NaiveBayesClassifier()
+classifier = nb.NaiveBayesSpamClassifier()
 classifier.train(trainSet)
 
 classified = [(subject, isSpam, classifier.classify(subject))
