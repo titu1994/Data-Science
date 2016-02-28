@@ -46,13 +46,13 @@ class OneRClassifier:
         # For each of the 4 features
         for i in range(numFeatures):
             # Get which feature is in which position of the data set
-            uniqueFeatureDict = self._getFeatureUniqueValuePositions(X[:, i])
+            uniqueFeatureDict = self.__getFeatureUniqueValuePositions(X[:, i])
 
             # For each feature fi and the list of positions in the data set posi
             for fi, posi in uniqueFeatureDict.items():
                 fiPosCount = fiNegCount = 0
                 # Calculate the positive and negative counts of each feature fi
-                fiNegCount, fiPosCount = self._calculateCounts(fiNegCount, fiPosCount, posi, y)
+                fiNegCount, fiPosCount = self.__calculateCounts(fiNegCount, fiPosCount, posi, y)
 
                 # If count of positive is greater than negative count, then choose winner as Positive result and
                 # calculate its probability of correctness
@@ -76,6 +76,22 @@ class OneRClassifier:
 
         self.rules = rulelist
 
+    def __getFeatureUniqueValuePositions(self, feature) -> defaultdict:
+        setDict = defaultdict(list) # Dictionary of lists
+
+        for i, f in enumerate(feature): # Index i, Feature f
+            setDict[f].append(i) # For each feature f, add all position i in that dictionary if lists
+
+        return setDict
+
+    def __calculateCounts(self, fiNegCount, fiPosCount, posi, y) -> (int, int):
+        for p in posi:
+            if y[p]: # If sample at position p has positive outcome
+                fiPosCount += 1
+            else:
+                fiNegCount += 1
+        return fiNegCount, fiPosCount
+
     def predict(self, X):
         X = np.array(X)
         yPred = []
@@ -84,59 +100,31 @@ class OneRClassifier:
         # For each input xi in list X
         for xi in X:
             # Get the corresponding set of rules for this xi
-            rule = self._getRule(xi, numFeatures)
+            rule = self.__getRule(xi, numFeatures)
             probPos = probNeg = 1.0
 
             # For each rule, calculate the probability of predicting true and false
             for r in rule:
                 if r.outcome == True:
-                    probPos *= r.prob
-                    probNeg *= 1 - r.prob
+                    probPos *= r.prob # Proba of positive class
+                    probNeg *= 1 - r.prob # Prob of negative outcome = 1 - prob of positive class
                 else:
-                    probPos *= 1 - r.prob
-                    probNeg *= r.prob
+                    probPos *= 1 - r.prob # Prob of positive outcome = 1 - prob of negative class
+                    probNeg *= r.prob # Prob of negative class
 
             # Use probabilities to determing the winner, aka Yes or No yi output and add it to the corresponding xi
             yPred.append(probPos > probNeg)
 
         return yPred
 
-
-    def _getRule(self, xi, numfeatures) -> list:
+    def __getRule(self, xi, numfeatures) -> list:
         rule = []
-        for i in range(numfeatures):
-            for r in self.rules:
-                if r.i == i and r.fi == xi[i]:
-                    rule.append(r)
+        for i in range(numfeatures): # For each feature i
+            for r in self.rules: # For each rule r
+                if r.i == i and r.fi == xi[i]: # If feature r.i == i and feature value r.fi == input class value xi[i]
+                    rule.append(r) # Add rule
 
         return rule
-
-
-    def _calculateCounts(self, fiNegCount, fiPosCount, posi, y) -> (int, int):
-        for p in posi:
-            if y[p]:
-                fiPosCount += 1
-            else:
-                fiNegCount += 1
-        return fiNegCount, fiPosCount
-
-    def _getFeatureUniqueValuePositions(self, feature) -> defaultdict:
-        setDict = defaultdict(list)
-
-        for i, f in enumerate(feature):
-            setDict[f].append(i)
-
-        return setDict
-
-    def _getFeatureUniqueValues(self, feature) -> list:
-        ids = set()
-
-        for i, f in enumerate(feature):
-            ids.add(i)
-
-        return list(ids)
-
-
 
 if __name__ == "__main__":
     """
@@ -147,10 +135,10 @@ if __name__ == "__main__":
     """
     classes = ["Age", "Income", "Student", "Credit Rating"]
 
-    idlabels = [{0:"Youth", 1: "Middle-Age", 2:"Senior"},
-                {0:"Low", 1:"Medium", 2:"High"},
-                {0:"Not Student", 1:"Student"},
-                {0:"Excellent", 1:"Fair"}]
+    classLabels = [{0: "Youth", 1: "Middle-Age", 2: "Senior"},
+                   {0:"Low", 1:"Medium", 2:"High"},
+                   {0:"Not Student", 1:"Student"},
+                   {0:"Excellent", 1:"Fair"}]
 
     buyscomputer = [((0, 2, 0, 1), False),
                     ((0, 2, 0, 0), False),
@@ -173,7 +161,7 @@ if __name__ == "__main__":
         X.append(buyscomputer[i][0])
         y.append(buyscomputer[i][1])
 
-    clf = OneRClassifier(classes=classes, labels=idlabels)
+    clf = OneRClassifier(classes=classes, labels=classLabels)
     clf.fit(X, y)
     yPred = clf.predict(X)
 
