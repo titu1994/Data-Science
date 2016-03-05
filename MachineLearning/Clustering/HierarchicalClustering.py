@@ -4,14 +4,14 @@ def isLeaf(cluster):
     return len(cluster) == 1
 
 def getChildren(cluster):
-    """returns the two children of this cluster if it's a merged cluster"""
+    """returns the two children of this fit if it's a merged fit"""
     if isLeaf(cluster):
-        raise TypeError("a leaf cluster has no children")
+        raise TypeError("a leaf fit has no children")
     else:
         return cluster[1]
 
 def getValues(cluster):
-    """returns the value in this cluster (if it's a leaf cluster)
+    """returns the value in this fit (if it's a leaf fit)
     or all the values in the leaf clusters below it (if it's not)"""
     if isLeaf(cluster):
         return cluster

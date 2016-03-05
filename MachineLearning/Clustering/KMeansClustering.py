@@ -1,7 +1,5 @@
 from LinearUtils.Vectors import squaredDistance, vectorMean, distance
 import random
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 
 class KMeans:
 
@@ -10,12 +8,11 @@ class KMeans:
         self.means = None
 
     def classify(self, input):
-        """return the index of the cluster closest to the input"""
+        """return the index of the fit closest to the input"""
         return min(range(self.k),
                    key=lambda i: squaredDistance(input, self.means[i]))
 
     def train(self, inputs):
-
         self.means = random.sample(inputs, self.k)
         assignments = None
 
@@ -42,63 +39,37 @@ def squaredClusteringErrors(inputs, k):
     return sum(squaredDistance(input,means[cluster])
                for input, cluster in zip(inputs, assignments))
 
-def plotSquaredClusteringErrors():
-
-    ks = range(1, len(inputs) + 1)
-    errors = [squaredClusteringErrors(inputs, k) for k in ks]
-
-    plt.plot(ks, errors)
-    plt.xticks(ks)
-    plt.xlabel("k")
-    plt.ylabel("total squared error")
-    plt.show()
-
-#
-# using clustering to recolor an image
-#
-
-def recolorImage(input_file, k=5):
-
-    img = mpimg.imread(input_file)
-    pixels = [pixel for row in img
-                    for pixel in row]
-    clusterer = KMeans(k)
-    clusterer.train(pixels)
-
-    def recolor(pixel):
-        cluster = clusterer.classify(pixel) # index of the closest cluster
-        return clusterer.means[cluster]     # mean of the closest cluster
-
-    new_img = [[recolor(pixel) for pixel in row]
-               for row in img]
-
-    plt.imshow(new_img)
-    plt.axis('off')
-    plt.show()
+def displayClusters(kmeans : KMeans):
+    for cluster in kmeans.means:
+        print(cluster)
 
 if __name__ == "__main__":
-    # Random data to test kmeans
-    inputs = [[-14,-5],[13,13],[20,23],[-19,-11],[-9,-16],[21,27],[-49,15],[26,13],[-46,5],[-34,-1],[11,15],[-49,0],[-22,-16],[19,28],[-12,-8],[-13,-19],[-41,8],[-11,-6],[-25,-9],[-18,-3]]
+
+    buyscomputer = [(0, 2, 0, 1),
+                    (0, 2, 0, 0),
+                    (1, 2, 0, 1),
+                    (2, 1, 0, 1),
+                    (2, 0, 1, 1),
+                    (2, 0, 1, 0),
+                    (1, 0, 1, 0),
+                    (0, 1, 0, 1),
+                    (0, 0, 1, 1),
+                    (2, 1, 1, 1),
+                    (0, 1, 1, 0),
+                    (1, 1, 0, 0),
+                    (1, 1, 1, 1),
+                    (2, 1, 0, 0)]
 
     random.seed(0)
     clusterer = KMeans(k=3)
-    clusterer.train(inputs)
+    clusterer.train(buyscomputer)
     print("3-means:")
-    print(clusterer.means)
-    print()
+    displayClusters(clusterer)
+    print("Squared Classification Errot : ", squaredClusteringErrors(buyscomputer, 3))
 
     random.seed(0)
-    clusterer = KMeans(k=2)
-    clusterer.train(inputs)
-    print("2-means:")
-    print(clusterer.means)
-    print()
-
-    print("Errors as a function of k")
-
-    for k in range(1, len(inputs) + 1):
-        print(k, squaredClusteringErrors(inputs, k))
-    print()
-
-    #print("Clustering image. Will take a large amount of time.")
-    #recolorImage(r"C:\Users\Yue\PycharmProjects\Data Science\MachineLearning\KNearestNeighbours\Balance-Circle.jpg",  k = 5)
+    clusterer = KMeans(k=5)
+    clusterer.train(buyscomputer)
+    print("\n5-means:")
+    displayClusters(clusterer)
+    print("Squared Classification Errot : ", squaredClusteringErrors(buyscomputer, 5))
